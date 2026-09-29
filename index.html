@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CryptoForge — Trade Crypto with Confidence</title>
+  <meta name="description" content="CryptoForge is a fast, secure cryptocurrency exchange. Trade Bitcoin, Ethereum, Solana and more with real-time market data, advanced charts, and lightning-fast order execution.">
+  <meta name="keywords" content="crypto exchange, bitcoin trading, ethereum, buy crypto, cryptocurrency platform">
+  <meta property="og:title" content="CryptoForge — Trade Crypto with Confidence">
+  <meta property="og:description" content="Fast, secure cryptocurrency trading. Real-time markets. Instant execution.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
+  <style>
+    .loader{position:fixed;inset:0;background:#0B0E11;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;gap:22px;transition:opacity .6s ease,visibility .6s ease}
+    .loader.done{opacity:0;visibility:hidden;pointer-events:none}
+    .loader-logo{font-family:'Manrope',sans-serif;font-size:2.4rem;font-weight:800;color:#00D68F;letter-spacing:-1px;opacity:0;animation:la .4s .2s ease forwards}
+    .loader-bar{width:190px;height:2px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
+    .loader-fill{height:100%;background:linear-gradient(90deg,#00D68F,#00A86B);width:0;animation:lf 1.7s cubic-bezier(.4,0,.2,1) forwards}
+    @keyframes la{to{opacity:1}}@keyframes lf{to{width:100%}}
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-logo">⬡ CryptoForge</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- ============================================================
+     LIVE TICKER — TOP BAR (real prices via API)
+     ============================================================ -->
+<div class="top-ticker" aria-hidden="true">
+  <div class="top-ticker-track" id="ticker-track"><!-- JS fills this --></div>
+</div>
+
+<!-- ============================================================
+     NAV
+     ============================================================ -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <a href="#hero" class="nav-logo" id="nav-logo">
+    <svg viewBox="0 0 28 28" fill="none" width="26" height="26" aria-hidden="true">
+      <path d="M14 2L26 8.5V19.5L14 26L2 19.5V8.5L14 2Z" stroke="#00D68F" stroke-width="1.5" fill="rgba(0,214,143,.1)"/>
+      <text x="14" y="19" text-anchor="middle" fill="#00D68F" font-size="10" font-weight="800" font-family="Manrope">₿</text>
+    </svg>
+    <span>CryptoForge</span>
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li><a href="#markets">Markets</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <a href="http://localhost:8080/login" class="btn-ghost" id="nav-login">Log In</a>
+    <a href="http://localhost:8080/register" class="btn btn-primary btn-sm" id="nav-signup">Get Started →</a>
+  </div>
+
+  <button class="nav-burger" id="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <ul>
+    <li><a href="#markets"  class="mobile-link">Markets</a></li>
+    <li><a href="#features" class="mobile-link">Features</a></li>
+    <li><a href="#how"      class="mobile-link">How It Works</a></li>
+    <li><a href="#security" class="mobile-link">Security</a></li>
+    <li><a href="#faq"      class="mobile-link">FAQ</a></li>
+    <li><a href="http://localhost:8080/login"    class="mobile-link">Log In</a></li>
+    <li><a href="http://localhost:8080/register" class="mobile-link">Get Started →</a></li>
+  </ul>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="hero" aria-label="Hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="hero-inner">
+
+    <!-- Left -->
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <span class="dot" aria-hidden="true"></span>
+        Real-Time Crypto Markets — Now Live
+      </div>
+      <h1 class="hero-headline">
+        Trade Crypto.<br>
+        <span class="text-accent">Fast. Secure.</span><br>
+        Now.
+      </h1>
+      <p class="hero-sub">
+        CryptoForge is a high-performance cryptocurrency exchange with real-time market data, ACID-safe order execution, and a seamless trading experience built for everyone.
+      </p>
+      <div class="hero-badges">
+        <div class="badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Bank-Level Security
+        </div>
+        <div class="badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Real-Time Markets
+        </div>
+        <div class="badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Instant Settlement
+        </div>
+        <div class="badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          JWT Secured
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="http://localhost:8080/register" class="btn btn-primary btn-lg" id="cta-start">
+          Start Trading Free
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#markets" class="btn btn-outline" id="cta-markets">View Live Markets</a>
+      </div>
+    </div>
+
+    <!-- Right: BTC chart panel -->
+    <div class="hero-right" aria-hidden="true">
+      <div class="chart-panel" id="chart-panel">
+        <div class="chart-header">
+          <div class="chart-asset">
+            <div class="coin-badge btc-badge">₿</div>
+            <div>
+              <div class="coin-name-big">BTC/USDT</div>
+              <div class="coin-sub">Bitcoin</div>
+            </div>
+          </div>
+          <div>
+            <div class="chart-live-price" id="hero-price">Loading...</div>
+            <div class="chart-change" id="hero-change">—</div>
+          </div>
+        </div>
+
+        <div class="tf-row">
+          <button class="tf active" data-tf="1H" id="tf-1h">1H</button>
+          <button class="tf" data-tf="24H" id="tf-24h">24H</button>
+          <button class="tf" data-tf="1W"  id="tf-1w">1W</button>
+          <button class="tf" data-tf="1M"  id="tf-1m">1M</button>
+          <button class="tf" data-tf="1Y"  id="tf-1y">1Y</button>
+        </div>
+
+        <div class="chart-wrap">
+          <canvas id="hero-chart" width="500" height="160"></canvas>
+        </div>
+
+        <div class="chart-foot">
+          <div>Vol: <span id="hero-vol">—</span></div>
+          <div>Mkt Cap: <span id="hero-cap">—</span></div>
+          <div class="live-pill"><span class="live-dot"></span> LIVE</div>
+        </div>
+      </div>
+
+      <!-- Floating order cards — updated by JS from real trades -->
+      <div class="fc fc-buy" id="fc-buy">
+        <div class="fc-dot buy"></div>
+        <div>
+          <div class="fc-label">Buy Order Filled</div>
+          <div class="fc-val up" id="fc-buy-val">0.05 BTC</div>
+          <div class="fc-usd" id="fc-buy-usd">$3,377.00</div>
+        </div>
+      </div>
+      <div class="fc fc-sell" id="fc-sell">
+        <div class="fc-dot sell"></div>
+        <div>
+          <div class="fc-label">Sell Order Filled</div>
+          <div class="fc-val down" id="fc-sell-val">2.5 ETH</div>
+          <div class="fc-usd" id="fc-sell-usd">$8,802.50</div>
+        </div>
+      </div>
+
+      <!-- Order book -->
+      <div class="ob-mini" id="ob-mini">
+        <div class="ob-title">Order Book</div>
+        <div class="ob-row s" id="ob-s1"><span>—</span><span>—</span></div>
+        <div class="ob-row s" id="ob-s2"><span>—</span><span>—</span></div>
+        <div class="ob-mid" id="ob-mid">— <small>Spread —%</small></div>
+        <div class="ob-row b" id="ob-b1"><span>—</span><span>—</span></div>
+        <div class="ob-row b" id="ob-b2"><span>—</span><span>—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ============================================================
+     TRUST STRIP
+     ============================================================ -->
+<section class="trust-strip" aria-label="Trust indicators">
+  <div class="container">
+    <div class="trust-grid">
+      <div class="trust-card anim">
+        <div class="trust-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div>
+          <div class="trust-label">Bank-Level Security</div>
+          <div class="trust-desc">JWT authentication, BCrypt password hashing, and encrypted data at rest on every account.</div>
+        </div>
+      </div>
+      <div class="trust-card anim anim-delay-1">
+        <div class="trust-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+        <div>
+          <div class="trust-label">ACID Transactions</div>
+          <div class="trust-desc">Every trade uses pessimistic locking and full rollback. Your funds are always safe, even under high concurrency.</div>
+        </div>
+      </div>
+      <div class="trust-card anim anim-delay-2">
+        <div class="trust-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div>
+          <div class="trust-label">Real-Time Data</div>
+          <div class="trust-desc">Live prices fetched from global market feeds every 15 seconds. Trade on current market conditions, always.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ABOUT / PRODUCT
+     ============================================================ -->
+<section class="about-section" id="about" aria-label="About CryptoForge">
+  <div class="container">
+    <div class="section-header anim">
+      <p class="eyebrow">Why CryptoForge</p>
+      <h2 class="section-title">A Real Exchange.<br><span class="text-accent">Built for Real Traders.</span></h2>
+    </div>
+    <div class="about-grid">
+      <div class="anim">
+        <p class="body-text">CryptoForge is a fully operational cryptocurrency exchange platform. Register, fund your account, and start trading Bitcoin, Ethereum, Solana, and more — with live market prices, real portfolio tracking, and instant order execution.</p>
+        <p class="body-text">Every trade is processed through a high-performance engine with ACID-safe database transactions, ensuring your balances are always accurate even under concurrent order pressure.</p>
+        <div class="check-list">
+          <div class="check-item"><span class="check-ico">✓</span> Live market prices</div>
+          <div class="check-item"><span class="check-ico">✓</span> Instant trade execution</div>
+          <div class="check-item"><span class="check-ico">✓</span> Real portfolio tracking</div>
+          <div class="check-item"><span class="check-ico">✓</span> Price alerts</div>
+          <div class="check-item"><span class="check-ico">✓</span> Trade history ledger</div>
+          <div class="check-item"><span class="check-ico">✓</span> Secure JWT sessions</div>
+        </div>
+        <a href="http://localhost:8080/register" class="btn btn-primary" style="display:inline-flex;margin-top:34px" id="cta-about">
+          Create Free Account
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+
+      <!-- Dashboard mockup — live data from backend -->
+      <div class="anim anim-delay-1">
+        <div class="dash-mock">
+          <div class="dm-head">
+            <div class="dm-tabs">
+              <span class="dm-tab a">Portfolio</span>
+              <span class="dm-tab">Orders</span>
+              <span class="dm-tab">History</span>
+            </div>
+            <div class="dm-bal">$<span id="dm-total">—</span> <span class="up" id="dm-pnl">—</span></div>
+          </div>
+          <canvas id="portfolio-chart" width="460" height="120" style="display:block;width:100%"></canvas>
+          <div class="dm-assets" id="dm-assets">
+            <!-- populated by JS from /api/assets -->
+            <div class="dm-row">
+              <div class="dm-left">
+                <div class="dm-ico btc-badge">₿</div>
+                <div><div class="dm-an">Bitcoin</div><div class="dm-am">Loading...</div></div>
+              </div>
+              <div class="dm-val"><div class="dm-pr">—</div><div class="dm-ch up">—</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FEATURES — "Built for every kind of trader"
+     ============================================================ -->
+<section class="features-section" id="features" aria-label="Platform features">
+  <div class="container">
+    <div class="section-header anim">
+      <p class="eyebrow">Platform Features</p>
+      <h2 class="section-title">Built for Every<br><span class="text-accent">Kind of Trader.</span></h2>
+      <p class="section-sub">From your first crypto purchase to advanced portfolio management — CryptoForge has you covered.</p>
+    </div>
+    <div class="feat-grid">
+      <a href="http://localhost:8080/trade" class="feat-card anim" id="f1">
+        <div class="feat-head">
+          <div class="feat-ico">⚡</div>
+          <svg class="feat-arrow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="feat-title">Lightning Order Execution</div>
+        <p class="feat-desc">Market and limit orders processed in milliseconds via our high-performance matching engine with pessimistic locking.</p>
+        <div class="feat-tags"><span class="tag">Market Orders</span><span class="tag">Limit Orders</span><span class="tag">ACID Safe</span></div>
+      </a>
+      <a href="http://localhost:8080/markets" class="feat-card anim anim-delay-1" id="f2">
+        <div class="feat-head">
+          <div class="feat-ico">📊</div>
+          <svg class="feat-arrow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="feat-title">Real-Time Price Charts</div>
+        <p class="feat-desc">Live OHLC candlestick charts with 72 hours of price history, volume data, and technical indicators for every asset.</p>
+        <div class="feat-tags"><span class="tag">Candlestick</span><span class="tag">OHLC Data</span><span class="tag">Volume</span></div>
+      </a>
+      <a href="http://localhost:8080/portfolio" class="feat-card anim anim-delay-2" id="f3">
+        <div class="feat-head">
+          <div class="feat-ico">💼</div>
+          <svg class="feat-arrow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="feat-title">Portfolio Dashboard</div>
+        <p class="feat-desc">Track your holdings, realized P&amp;L, portfolio value history, and transaction ledger — all in one place.</p>
+        <div class="feat-tags"><span class="tag">P&amp;L Tracking</span><span class="tag">Holdings</span><span class="tag">History</span></div>
+      </a>
+      <a href="http://localhost:8080/alerts" class="feat-card anim anim-delay-3" id="f4">
+        <div class="feat-head">
+          <div class="feat-ico">🔔</div>
+          <svg class="feat-arrow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="feat-title">Price Alerts</div>
+        <p class="feat-desc">Set custom price alerts for any asset. Get notified instantly when your target price is hit — never miss a move.</p>
+        <div class="feat-tags"><span class="tag">Custom Alerts</span><span class="tag">All Assets</span><span class="tag">Instant</span></div>
+      </a>
+      <a href="http://localhost:8080/wallet" class="feat-card anim anim-delay-4" id="f5">
+        <div class="feat-head">
+          <div class="feat-ico">🔒</div>
+          <svg class="feat-arrow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="feat-title">Secure Wallets</div>
+        <p class="feat-desc">Segregated wallets per asset with balance reconciliation on every trade. Your crypto is always accounted for.</p>
+        <div class="feat-tags"><span class="tag">Multi-Asset</span><span class="tag">Reconciled</span><span class="tag">Encrypted</span></div>
+      </a>
+      <a href="http://localhost:8080/leaderboard" class="feat-card anim anim-delay-5" id="f6">
+        <div class="feat-head">
+          <div class="feat-ico">🏆</div>
+          <svg class="feat-arrow" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </div>
+        <div class="feat-title">Leaderboard</div>
+        <p class="feat-desc">See how your portfolio ranks against other traders on the platform. Compete for the top spot in real time.</p>
+        <div class="feat-tags"><span class="tag">Live Rankings</span><span class="tag">Anonymous</span><span class="tag">Real-Time</span></div>
+      </a>
+    </div>
+    <div class="section-cta anim">
+      <a href="http://localhost:8080/register" class="btn btn-outline" id="cta-feat">
+        Start Trading Now
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LIVE MARKETS TABLE — real data from /api/prices
+     ============================================================ -->
+<section class="market-section" id="markets" aria-label="Live markets">
+  <div class="container">
+    <div class="section-header anim">
+      <p class="eyebrow">Live Markets</p>
+      <h2 class="section-title">Real-Time Crypto<br><span class="text-accent">Prices.</span></h2>
+      <p class="section-sub">Prices refresh every 15 seconds from global market feeds.</p>
+    </div>
+    <div class="anim">
+      <div class="market-tabs" role="tablist">
+        <button class="mkt-tab active" data-t="all"     id="mt-all"     role="tab">All</button>
+        <button class="mkt-tab"        data-t="gainers" id="mt-gainers" role="tab">Top Gainers</button>
+        <button class="mkt-tab"        data-t="losers"  id="mt-losers"  role="tab">Top Losers</button>
+      </div>
+      <div class="market-table-wrap">
+        <table class="market-table" aria-label="Crypto prices">
+          <thead>
+            <tr>
+              <th>#</th><th>Asset</th><th>Price</th><th>24H Change</th>
+              <th>Volume (24H)</th><th>Market Cap</th><th>Sparkline</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="market-tbody">
+            <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">Loading live market data…</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="explore-row">
+        <a href="http://localhost:8080/markets" class="explore-all" id="view-all-markets">
+          View all markets on the platform
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section class="how-section" id="how" aria-label="How trading works">
+  <div class="container">
+    <div class="section-header anim">
+      <p class="eyebrow">How It Works</p>
+      <h2 class="section-title">Start Trading in<br><span class="text-accent">Three Steps.</span></h2>
+    </div>
+    <div class="how-steps anim">
+      <div class="how-step">
+        <div class="step-num">01</div>
+        <div class="step-ico">👤</div>
+        <div class="step-title">Create Account</div>
+        <p class="step-desc">Sign up in seconds. Your account comes with an instant funded wallet — ready to trade from day one.</p>
+      </div>
+      <div class="connector">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="how-step">
+        <div class="step-num">02</div>
+        <div class="step-ico">📈</div>
+        <div class="step-title">Browse Markets</div>
+        <p class="step-desc">Explore live prices, charts, and order books for Bitcoin, Ethereum, Solana, and more — all updated in real time.</p>
+      </div>
+      <div class="connector">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="how-step">
+        <div class="step-num">03</div>
+        <div class="step-ico">⚡</div>
+        <div class="step-title">Place Your Trade</div>
+        <p class="step-desc">Buy or sell with one click. Orders are matched instantly. Your portfolio updates immediately. It's that fast.</p>
+      </div>
+      <div class="connector">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </div>
+      <div class="how-step">
+        <div class="step-num">04</div>
+        <div class="step-ico">💰</div>
+        <div class="step-title">Track Your Gains</div>
+        <p class="step-desc">Watch your portfolio grow. Track P&amp;L, set price alerts, review your full trade history — all from your dashboard.</p>
+      </div>
+    </div>
+    <div class="section-cta anim">
+      <a href="http://localhost:8080/register" class="btn btn-primary" id="cta-how">
+        Start Trading Free
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- ============================================================
+     SECURITY SECTION
+     ============================================================ -->
+<section class="security-section" id="security" aria-label="Security">
+  <div class="container">
+    <div class="section-header anim">
+      <p class="eyebrow">Security First</p>
+      <h2 class="section-title">Your Funds Are<br><span class="text-accent">Always Safe.</span></h2>
+      <p class="section-sub">We've built CryptoForge with security as the foundation — not an afterthought.</p>
+    </div>
+    <div class="sec-grid">
+      <div class="sec-card anim">
+        <div class="sec-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="sec-title">JWT Authentication</div>
+        <p class="sec-desc">Stateless JSON Web Tokens with configurable expiry. Every API request is verified. No session hijacking possible.</p>
+      </div>
+      <div class="sec-card anim anim-delay-1">
+        <div class="sec-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+        <div class="sec-title">ACID Transactions</div>
+        <p class="sec-desc">Every trade uses <code>SELECT FOR UPDATE</code> pessimistic locking. Concurrent orders never corrupt your balance — guaranteed.</p>
+      </div>
+      <div class="sec-card anim anim-delay-2">
+        <div class="sec-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="sec-title">BCrypt Password Hashing</div>
+        <p class="sec-desc">Passwords are never stored in plain text. Industry-standard BCrypt with adaptive cost factor protects every account.</p>
+      </div>
+      <div class="sec-card anim anim-delay-3">
+        <div class="sec-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="sec-title">Real-Time Audit Logs</div>
+        <p class="sec-desc">Every login attempt and trade is logged with full details. Complete audit trail for compliance and account security.</p>
+      </div>
+      <div class="sec-card anim anim-delay-4">
+        <div class="sec-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <div class="sec-title">Route Protection</div>
+        <p class="sec-desc">All trading and portfolio endpoints require authentication. Admin routes protected with role-based access control.</p>
+      </div>
+      <div class="sec-card anim anim-delay-5">
+        <div class="sec-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
+        <div class="sec-title">HikariCP Connection Pool</div>
+        <p class="sec-desc">Production-grade database connection pooling with timeout protection. No connection leaks, no downtime from DB overload.</p>
+      </div>
+    </div>
+    <div class="section-cta anim">
+      <a href="http://localhost:8080/register" class="btn btn-primary" id="cta-security">
+        Start Trading Securely
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section class="faq-section" id="faq" aria-label="FAQ">
+  <div class="container">
+    <div class="section-header anim">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="section-title">Common<br><span class="text-accent">Questions.</span></h2>
+    </div>
+    <div class="faq-list anim" id="faq-list">
+
+      <div class="faq-item" id="faq-1">
+        <button class="faq-q" aria-expanded="false" aria-controls="fa-1">
+          <span class="faq-n">01</span>
+          <span class="faq-qt">How do I start trading on CryptoForge?</span>
+          <svg class="faq-chev" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-ans" id="fa-1"><p>Create a free account, fund your wallet, and you can place your first trade instantly. The platform supports market and limit orders for all listed assets, with real-time price data to help you make informed decisions.</p></div>
+      </div>
+
+      <div class="faq-item" id="faq-2">
+        <button class="faq-q" aria-expanded="false" aria-controls="fa-2">
+          <span class="faq-n">02</span>
+          <span class="faq-qt">How are prices updated in real time?</span>
+          <svg class="faq-chev" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-ans" id="fa-2"><p>CryptoForge pulls live cryptocurrency prices from CoinGecko's global market feed every 15 seconds. Our backend MarketDataPoller service continuously refreshes prices in the database, and the frontend polls our <code>/api/prices</code> endpoint to display up-to-date information.</p></div>
+      </div>
+
+      <div class="faq-item" id="faq-3">
+        <button class="faq-q" aria-expanded="false" aria-controls="fa-3">
+          <span class="faq-n">03</span>
+          <span class="faq-qt">Is my trade data safe from concurrent access issues?</span>
+          <svg class="faq-chev" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-ans" id="fa-3"><p>Yes. Every order goes through our ACID-compliant order engine using <code>SELECT FOR UPDATE</code> pessimistic database locks. This prevents race conditions even under high concurrent load. If anything goes wrong mid-transaction, it fully rolls back — your balance is always consistent.</p></div>
+      </div>
+
+      <div class="faq-item" id="faq-4">
+        <button class="faq-q" aria-expanded="false" aria-controls="fa-4">
+          <span class="faq-n">04</span>
+          <span class="faq-qt">What assets can I trade on the platform?</span>
+          <svg class="faq-chev" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-ans" id="fa-4"><p>CryptoForge currently supports Bitcoin (BTC), Ethereum (ETH), Solana (SOL), BNB, Ripple (XRP), Cardano (ADA), and Avalanche (AVAX). All pairs are traded against USD. More assets are added regularly.</p></div>
+      </div>
+
+      <div class="faq-item" id="faq-5">
+        <button class="faq-q" aria-expanded="false" aria-controls="fa-5">
+          <span class="faq-n">05</span>
+          <span class="faq-qt">How do price alerts work?</span>
+          <svg class="faq-chev" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="faq-ans" id="fa-5"><p>Set a target price for any asset from the Alerts section of your dashboard. CryptoForge monitors prices in the background and notifies you instantly when your target is hit — so you never miss a market move while you're away.</p></div>
+      </div>
+
+    </div>
+    <div class="faq-more anim"><a href="http://localhost:8080/help" class="explore-all" id="faq-more">More help &amp; documentation <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer class="footer" id="footer" aria-label="Footer">
+  <div class="footer-badges-row">
+    <div class="container">
+      <div class="footer-badges">
+        <div class="fbadge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Bank-Level Security</div>
+        <div class="fbadge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> ACID Compliant</div>
+        <div class="fbadge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00D68F" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Real-Time Markets</div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-logo">⬡ CryptoForge</div>
+        <p>A high-performance cryptocurrency exchange platform. Trade confidently with real-time markets, instant execution, and bank-level security.</p>
+        <div class="footer-social">
+          <a href="http://localhost:8080" class="social-btn" id="footer-platform">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+            Platform
+          </a>
+          <a href="http://localhost:8080/api/prices" class="social-btn" id="footer-api" target="_blank">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            Live API
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Trade</h4>
+        <ul>
+          <li><a href="http://localhost:8080/markets">Markets</a></li>
+          <li><a href="http://localhost:8080/trade">Trade</a></li>
+          <li><a href="http://localhost:8080/portfolio">Portfolio</a></li>
+          <li><a href="http://localhost:8080/wallet">Wallet</a></li>
+          <li><a href="http://localhost:8080/alerts">Price Alerts</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#security">Security</a></li>
+          <li><a href="#how">How It Works</a></li>
+          <li><a href="http://localhost:8080/leaderboard">Leaderboard</a></li>
+          <li><a href="http://localhost:8080/api/prices" target="_blank">API</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="http://localhost:8080/register">Create Account</a></li>
+          <li><a href="http://localhost:8080/login">Log In</a></li>
+          <li><a href="http://localhost:8080/dashboard">Dashboard</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="http://localhost:8080/help">Help</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 CryptoForge. All rights reserved. Trade responsibly.</span>
+      <div class="footer-status"><span class="status-dot"></span> All systems operational</div>
+    </div>
+  </div>
+</footer>
+<script>
+  // Set your backend URL here after deploying on Render / Railway
+  // If hosted on localhost, automatically connects to http://localhost:8080
+  window.CRYPTOFORGE_BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:8080'
+    : 'https://cryptoforge-api.onrender.com';
+</script>
+<script src="assets/js/main.js" defer></script>
+</body>
+</html>

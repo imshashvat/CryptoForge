@@ -1,0 +1,36 @@
+# ============================================================
+# render.yaml — Render.com Deployment Configuration
+# Deploy: Push to GitHub → Render detects this file automatically
+# Docs: https://render.com/docs/render-yaml-spec
+# ============================================================
+
+services:
+
+  # Spring Boot Web Service
+  - type: web
+    name: cryptoforge-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free                    # Upgrade to starter for always-on
+    healthCheckPath: /actuator/health
+    autoDeploy: true              # Auto-deploys on every git push
+
+    envVars:
+      # These are set in Render Dashboard → Environment tab (never commit real values!)
+      - key: DATABASE_URL
+        sync: false               # sync:false = must be set manually in dashboard
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod               # Always use prod profile on Render
+      - key: PORT
+        value: 8080
+
+    # Render free tier notes:
+    # - Spins down after 15 min of inactivity
+    # - Use /actuator/health with UptimeRobot to keep warm before demo
+    # - Cold start takes ~30 seconds on free tier

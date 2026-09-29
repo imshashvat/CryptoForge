@@ -1,0 +1,47 @@
+# ============================================================
+# .gitignore — CryptoForge
+# ============================================================
+
+# -------- Secrets (NEVER commit these) --------
+.env
+*.env.local
+*.env.production
+
+# -------- Maven --------
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# -------- IDE --------
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.code-workspace
+.classpath
+.project
+.settings/
+
+# -------- OS --------
+.DS_Store
+Thumbs.db
+
+# -------- Logs --------
+*.log
+logs/
+
+# -------- Node (if using npm for tooling) --------
+node_modules/
+npm-debug.log*
+
+# -------- Build artifacts --------
+*.jar
+*.war
+*.ear
+dist/
+build/
+
+# -------- Spring Boot --------
+spring-shell.log
