@@ -434,25 +434,7 @@
                 </button>
             </form>
 
-            <div class="auth-divider">Demo Account</div>
 
-            <div class="demo-box">
-                <div class="demo-label">Demo Credentials</div>
-                <div class="demo-creds">
-                    <div>
-                        <div class="demo-key">Username</div>
-                        <div class="demo-val">demo_user</div>
-                    </div>
-                    <div>
-                        <div class="demo-key">Password</div>
-                        <div class="demo-val">Demo@1234</div>
-                    </div>
-                </div>
-                <button class="btn-demo"
-                        onclick="document.getElementById('username').value='demo_user';document.getElementById('password').value='Demo@1234';">
-                    ⚡ Fill Demo Credentials
-                </button>
-            </div>
 
             <div class="auth-footer-link">
                 Don't have an account? <a href="/register">Create account →</a>

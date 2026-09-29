@@ -1,0 +1,127 @@
+# CryptoForge Deployment Guide
+
+This guide walks you through deploying **CryptoForge** to production across the following free-tier stack:
+
+- **Frontend (Marketing Landing Page)**: [Vercel](https://vercel.com) (100% Free)
+- **Backend (Spring Boot 3.2 + Embedded Tomcat / JSP / REST API)**: [Render](https://render.com) (Free Tier Web Service)
+- **Database (MySQL 8.0)**: [Aiven for MySQL](https://aiven.io) (Free Tier, 5GB storage, always-on) or [Railway MySQL](https://railway.app)
+
+---
+
+## Architecture Overview
+
+```mermaid
+graph LR
+    User[User / Browser]
+    Vercel["Vercel (Frontend)<br/>index.html + assets/"]
+    Render["Render (Backend Docker)<br/>Spring Boot Web Service"]
+    MySQL["Cloud MySQL 8.0<br/>(Aiven / Railway)"]
+
+    User -->|Static Landing Page| Vercel
+    User -->|Trade, Login, APIs & JSP Views| Render
+    Vercel -->|Real-time Market Fetch| Render
+    Render -->|JDBC Connection Pool| MySQL
+```
+
+---
+
+## Step 1: Push Code to GitHub
+
+Your repository has already been initialized and committed with all necessary files (`Dockerfile`, `render.yaml`, `vercel.json`, and dynamic URL resolution).
+
+Run the following command from your terminal to push it to your GitHub account:
+
+```bash
+git push -u origin main
+```
+
+*(If prompted, authenticate using your GitHub Personal Access Token or GitHub Desktop/browser).*
+
+---
+
+## Step 2: Set Up Free Cloud MySQL (Aiven or Railway)
+
+### Option A: Aiven for MySQL (Recommended — Free Tier, No Expiring Trial)
+1. Go to [aiven.io](https://aiven.io) and create a free account.
+2. Click **Create Service** → select **MySQL** → pick the **Free** plan.
+3. Once provisioned (approx. 2 minutes), go to **Service Overview**.
+4. Note the following values:
+   - **Host** (e.g. `mysql-xxxx.aivencloud.com`)
+   - **Port** (e.g. `12345`)
+   - **User** (`avnadmin`)
+   - **Password** (shown in console)
+   - **Database Name** (`defaultdb`)
+5. Your JDBC URL format will be:
+   ```
+   jdbc:mysql://<HOST>:<PORT>/defaultdb?ssl-mode=REQUIRED
+   ```
+
+### Option B: Railway MySQL
+1. Go to [railway.app](https://railway.app) and sign in with GitHub.
+2. Click **New Project** → **Provision MySQL**.
+3. Under the **Connect** tab, copy `DATABASE_URL`, `DB_USERNAME`, and `DB_PASSWORD`.
+
+> [!NOTE]
+> When the backend boots with the `prod` profile, Hibernate (`ddl-auto=update`) and `DataInitializer` will **automatically create all tables, seed default cryptocurrency assets, and provision the admin and demo user accounts** upon first startup.
+
+---
+
+## Step 3: Deploy Backend to Render
+
+1. Go to [render.com](https://render.com) and log in with your GitHub account.
+2. Click **New +** → **Web Service**.
+3. Select your `CryptoForge` GitHub repository.
+4. Render will detect the repository. Configure the following:
+   - **Name**: `cryptoforge-api`
+   - **Runtime**: `Docker` (uses the newly created `Dockerfile`)
+   - **Region**: Choose the region closest to your database (e.g., Frankfurt, Oregon, Singapore)
+   - **Plan**: `Free`
+5. Scroll down to **Environment Variables** and add the following keys:
+
+| Key | Value / Source |
+|---|---|
+| `SPRING_PROFILES_ACTIVE` | `prod` |
+| `DATABASE_URL` | `jdbc:mysql://<HOST>:<PORT>/<DB_NAME>?ssl-mode=REQUIRED` |
+| `DB_USERNAME` | `<YOUR_DB_USER>` |
+| `DB_PASSWORD` | `<YOUR_DB_PASSWORD>` |
+| `JWT_SECRET` | Any random 32+ character string (e.g. `CryptoForgeProduction2025SecretKey123!`) |
+| `PORT` | `8080` |
+
+6. Click **Create Web Service**.
+7. Render will build the Docker container and start the service.
+8. Once live, test the endpoint:
+   ```
+   https://cryptoforge-api.onrender.com/actuator/health
+   ```
+   It should return `{"status":"UP"}`!
+
+---
+
+## Step 4: Deploy Frontend to Vercel
+
+1. Go to [vercel.com](https://vercel.com) and sign in with your GitHub account.
+2. Click **Add New...** → **Project**.
+3. Import your `CryptoForge` repository.
+4. Under **Build and Output Settings**:
+   - **Framework Preset**: `Other` (or leave default static)
+   - **Root Directory**: `./` (leave default)
+5. Click **Deploy**.
+6. Vercel will deploy the static site in seconds via [vercel.json](file:///c:/Users/shash/CryptoForge/vercel.json).
+7. If your Render backend URL is different from `https://cryptoforge-api.onrender.com`, open [index.html](file:///c:/Users/shash/CryptoForge/index.html#L638-L642) and update `window.CRYPTOFORGE_BACKEND_URL` with your actual Render URL:
+   ```html
+   <script>
+     window.CRYPTOFORGE_BACKEND_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+       ? 'http://localhost:8080'
+       : 'https://your-custom-render-name.onrender.com';
+   </script>
+   ```
+
+---
+
+## Verification Checklist
+
+- [ ] `https://your-app.vercel.app` loads the interactive landing page.
+- [ ] Clicking **Log In** or **Get Started** redirects to `https://<render-backend>/login` or `register`.
+- [ ] Coin prices on the landing page stream live from CoinGecko / Render backend `/api/prices`.
+- [ ] Logging in with `demo_user` / `Demo@1234` opens the trading portfolio dashboard.
+- [ ] Admin dashboard accessible at `https://<render-backend>/admin` with `admin` / `Admin@123`.

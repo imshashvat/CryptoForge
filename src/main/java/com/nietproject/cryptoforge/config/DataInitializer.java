@@ -73,6 +73,7 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         seedAssets();
         seedAdmin();
+        seedSuperAdmin();
         seedDemoUser();
         createStoredProcedure();
     }
@@ -168,6 +169,31 @@ public class DataInitializer implements ApplicationRunner {
             walletRepository.save(Wallet.builder().user(savedAdmin).currencyCode(code).balance(BigDecimal.ZERO).build())
         );
         log.info("[DataInitializer] ✅ Admin account created — username: admin / password: Admin@123");
+    }
+
+    private void seedSuperAdmin() {
+        User superAdmin = userRepository.findByUsername("superadmin").orElse(null);
+        if (superAdmin != null) {
+            superAdmin.setPasswordHash(passwordEncoder.encode("SuperAdmin@123"));
+            superAdmin.setRole(User.Role.ADMIN);
+            userRepository.save(superAdmin);
+            return;
+        }
+        superAdmin = User.builder()
+                .username("superadmin")
+                .email("owner@cryptoforge.dev")
+                .passwordHash(passwordEncoder.encode("SuperAdmin@123"))
+                .role(User.Role.ADMIN)
+                .active(true)
+                .build();
+        superAdmin = userRepository.save(superAdmin);
+
+        walletRepository.save(Wallet.builder().user(superAdmin).currencyCode("USD").balance(new BigDecimal("999999.00")).build());
+        final User savedSuperAdmin = superAdmin;
+        ASSET_CODES.forEach(code ->
+            walletRepository.save(Wallet.builder().user(savedSuperAdmin).currencyCode(code).balance(BigDecimal.ZERO).build())
+        );
+        log.info("[DataInitializer] ✅ Second Admin created — username: superadmin / password: SuperAdmin@123");
     }
 
     private void seedDemoUser() {
