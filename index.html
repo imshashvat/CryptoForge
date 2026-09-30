@@ -32,6 +32,16 @@
   <div class="loader-logo">⬡ CryptoForge</div>
   <div class="loader-bar"><div class="loader-fill"></div></div>
 </div>
+<script>
+  // Fail-safe loader dismissal: guarantees screen never stays stuck on loading
+  setTimeout(function() {
+    var l = document.getElementById('loader');
+    if (l && !l.classList.contains('done')) {
+      l.classList.add('done');
+      setTimeout(function() { l.style.display = 'none'; }, 600);
+    }
+  }, 1200);
+</script>
 
 <!-- ============================================================
      LIVE TICKER — TOP BAR (real prices via API)

@@ -36,15 +36,24 @@ let heroChartData = [];
 let animFrame     = null;
 let sparklineData = {};  // { BTC: [prices...], ... }
 
-/* ============================================================
-   BOOT
-   ============================================================ */
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('loader').classList.add('done');
-    boot();
-  }, 1750);
-});
+function dismissLoader() {
+  const loader = document.getElementById('loader');
+  if (loader && !loader.classList.contains('done')) {
+    loader.classList.add('done');
+    setTimeout(() => { loader.style.display = 'none'; }, 600);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(dismissLoader, 800);
+    boot().catch(err => console.warn('Boot warning:', err));
+  });
+} else {
+  setTimeout(dismissLoader, 400);
+  boot().catch(err => console.warn('Boot warning:', err));
+}
+
 
 async function boot() {
   initLenis();
