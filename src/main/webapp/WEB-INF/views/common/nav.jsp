@@ -55,7 +55,7 @@
                     <span class="nav-role">Trader</span>
                     <% } %>
                 </div>
-                <div class="nav-avatar" title="Sign out" onclick="window.location='/logout'">
+                <div class="nav-avatar" id="navAvatar" title="Account menu">
                     <%= navInitial %>
                 </div>
             </div>

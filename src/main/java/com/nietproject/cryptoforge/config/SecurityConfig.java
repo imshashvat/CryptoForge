@@ -39,7 +39,9 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        // Strength 10 is Spring Security's recommended default — cryptographically solid
+        // and ~4x faster than 12, which was adding ~500ms to every login/register call.
+        return new BCryptPasswordEncoder(10);
     }
 
     @Bean
