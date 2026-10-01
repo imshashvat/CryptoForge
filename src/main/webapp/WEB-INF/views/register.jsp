@@ -357,13 +357,16 @@ document.getElementById('passwordInput').addEventListener('input', function(){
 /* Register form AJAX */
 document.getElementById('registerForm').addEventListener('submit', function(e){
     e.preventDefault();
-    var btn  = document.getElementById('submitBtn');
-    btn.textContent = 'Creating account…';
-    btn.disabled = true;
-    var data = new URLSearchParams(new FormData(this));
+    var formData = new FormData(this);
+    var payload = {
+        username: formData.get('username'),
+        email:    formData.get('email'),
+        password: formData.get('password')
+    };
     fetch('/api/auth/register', {
-        method:'POST', body:data,
-        headers:{'Content-Type':'application/x-www-form-urlencoded'}
+        method:'POST',
+        body: JSON.stringify(payload),
+        headers:{'Content-Type':'application/json'}
     })
     .then(function(r){ return r.json(); })
     .then(function(res){

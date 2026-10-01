@@ -26,7 +26,14 @@ public class JwtUtils {
     private long jwtExpirationMs;
 
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        byte[] keyBytes = (jwtSecret != null ? jwtSecret : "CryptoForgeDefaultFallbackSecretKey2025!").getBytes();
+        if (keyBytes.length < 32) {
+            try {
+                java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+                keyBytes = md.digest(keyBytes);
+            } catch (Exception ignored) {}
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String username) {

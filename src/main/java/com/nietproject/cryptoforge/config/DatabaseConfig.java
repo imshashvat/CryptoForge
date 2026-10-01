@@ -88,6 +88,10 @@ public class DatabaseConfig {
         config.setConnectionTimeout(30000);
         config.setIdleTimeout(600000);
         config.setMaxLifetime(1800000);
+        config.setKeepaliveTime(30000);
+        config.setConnectionTestQuery("/* ping */ SELECT 1");
+        config.setValidationTimeout(3000);
+        config.setLeakDetectionThreshold(45000);
 
         return new HikariDataSource(config);
     }

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Failed — CryptoForge</title>
     <link rel="stylesheet" href="/assets/css/forge.css">
-    <script>(function(){var t=localStorage.getItem('cf-theme')||'light';document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
 <div class="auth-shell">
