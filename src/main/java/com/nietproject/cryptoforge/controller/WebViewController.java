@@ -59,6 +59,26 @@ public class WebViewController {
     }
 
 
+    @GetMapping("/markets")
+    public String redirectMarkets() {
+        return "redirect:/dashboard";
+    }
+
+    @GetMapping("/trade")
+    public String redirectTrade() {
+        return "redirect:/order";
+    }
+
+    @GetMapping("/wallet")
+    public String redirectWallet() {
+        return "redirect:/portfolio";
+    }
+
+    @GetMapping("/help")
+    public String redirectHelp() {
+        return "redirect:/dashboard";
+    }
+
     @GetMapping("/login")
     public String showLoginPage(HttpSession session) {
         if (session != null && session.getAttribute("userId") != null) {
