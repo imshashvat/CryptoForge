@@ -92,52 +92,9 @@
                     </tr>
                 </thead>
                 <tbody id="marketTbody">
-                    <c:forEach var="a" items="${assets}" varStatus="s">
-                        <%-- Hidden data row for JS to pick up --%>
+                    <%-- Data rows only — forge.js renders the visible rows via renderMarketTable() --%>
+                    <c:forEach var="a" items="${assets}">
                         <tr data-asset='{"code":"${a.code}","name":"${a.name}","currentPriceUsd":${a.currentPriceUsd},"priceChange24h":${a.priceChange24h},"marketCapUsd":${a.marketCapUsd}}' style="display:none;"></tr>
-                    </c:forEach>
-                    <%-- Server-rendered fallback (shown without JS) --%>
-                    <c:forEach var="a" items="${assets}" varStatus="s">
-                        <tr class="js-hide" data-code="${a.code}">
-                            <td class="text-muted" style="font-size:12px;">${s.index + 1}</td>
-                            <td>
-                                <div class="coin-info">
-                                    <div class="coin-icon" style="font-size:14px;">${a.code.substring(0,1)}</div>
-                                    <div>
-                                        <div class="coin-name">${a.name}</div>
-                                        <div class="coin-symbol">${a.code}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="price-mono" data-price="${a.code}">
-                                <c:choose>
-                                    <c:when test="${a.currentPriceUsd >= 1}">$<fmt:formatNumber value="${a.currentPriceUsd}" minFractionDigits="2" maxFractionDigits="2"/></c:when>
-                                    <c:otherwise>$<fmt:formatNumber value="${a.currentPriceUsd}" minFractionDigits="4" maxFractionDigits="6"/></c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <span class="change-pill <c:choose><c:when test='${a.priceChange24h >= 0}'>change-up</c:when><c:otherwise>change-down</c:otherwise></c:choose>">
-                                    <c:if test="${a.priceChange24h >= 0}">+</c:if><fmt:formatNumber value="${a.priceChange24h}" maxFractionDigits="2"/>%
-                                </span>
-                            </td>
-                            <td class="price-mono text-secondary">
-                                <c:choose>
-                                    <c:when test="${a.marketCapUsd >= 1000000000000}">$<fmt:formatNumber value="${a.marketCapUsd / 1000000000000}" maxFractionDigits="2"/>T</c:when>
-                                    <c:when test="${a.marketCapUsd >= 1000000000}">$<fmt:formatNumber value="${a.marketCapUsd / 1000000000}" maxFractionDigits="2"/>B</c:when>
-                                    <c:when test="${a.marketCapUsd >= 1000000}">$<fmt:formatNumber value="${a.marketCapUsd / 1000000}" maxFractionDigits="2"/>M</c:when>
-                                    <c:otherwise>$<fmt:formatNumber value="${a.marketCapUsd}" maxFractionDigits="0"/></c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>
-                                <canvas style="width:80px;height:32px;" data-spark="${a.code}" data-change="${a.priceChange24h}" data-price-val="${a.currentPriceUsd}"></canvas>
-                            </td>
-                            <td>
-                                <div class="flex gap-2">
-                                    <a href="/order?asset=${a.code}" class="btn btn-sm btn-buy" style="width:60px;padding:5px 0;">Buy</a>
-                                    <a href="/order?asset=${a.code}&type=SELL" class="btn btn-sm btn-sell" style="width:60px;padding:5px 0;">Sell</a>
-                                </div>
-                            </td>
-                        </tr>
                     </c:forEach>
                 </tbody>
             </table>
@@ -148,30 +105,10 @@
 
 <script src="/assets/js/forge.js"></script>
 <script>
-(function () {
-  // Hide server-rendered rows (JS will take over)
-  // Actually keep them visible, just draw sparklines on them
-  document.querySelectorAll('[data-spark]').forEach(function (canvas) {
-    var change = parseFloat(canvas.dataset.change) || 0;
-    var price  = parseFloat(canvas.dataset.priceVal) || 100;
-    var color  = change >= 0 ? '#16A34A' : '#DC2626';
-    var data   = [];
-    var cur    = price;
-    for (var i = 0; i < 20; i++) {
-      cur = cur * (1 + (change / 100 / 20) + (Math.random() - 0.5) * 0.006);
-      data.push(cur);
-    }
-    if (window.CryptoForge) window.CryptoForge.drawSparkline(canvas, data, color);
-  });
-
-  // Alert badge
-  fetch('/api/alerts/count').then(function(r){return r.json();}).then(function(n){
-    if (n > 0) {
-      var b = document.getElementById('navAlertBadge');
-      if (b) { b.style.display=''; b.textContent=n; }
-    }
-  }).catch(function(){});
-})();
+// Alert badge count
+fetch('/api/alerts/count').then(function(r){return r.json();}).then(function(n){
+  if (n > 0) { var b = document.getElementById('navAlertBadge'); if (b) { b.style.display=''; b.textContent=n; } }
+}).catch(function(){});
 </script>
 </body>
 </html>
