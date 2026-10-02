@@ -89,9 +89,14 @@ public class DatabaseConfig {
         config.setIdleTimeout(600000);
         config.setMaxLifetime(1800000);
         config.setKeepaliveTime(30000);
-        config.setConnectionTestQuery("/* ping */ SELECT 1");
-        config.setValidationTimeout(3000);
-        config.setLeakDetectionThreshold(45000);
+        config.setValidationTimeout(10000);
+        config.setLeakDetectionThreshold(60000);
+        config.addDataSourceProperty("connectTimeout", "15000");
+        config.addDataSourceProperty("socketTimeout", "30000");
+        config.addDataSourceProperty("autoReconnect", "true");
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
 
         return new HikariDataSource(config);
     }
