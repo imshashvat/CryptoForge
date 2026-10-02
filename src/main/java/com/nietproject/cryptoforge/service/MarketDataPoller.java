@@ -126,7 +126,7 @@ public class MarketDataPoller implements Runnable {
                     checkAlerts();
                 }
 
-                Thread.sleep(15_000);   // poll every 15 seconds
+                Thread.sleep(30_000);   // poll every 30 seconds (reduces DB & CPU load on free tier)
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

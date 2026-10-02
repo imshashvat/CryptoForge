@@ -7,11 +7,7 @@
 
 'use strict';
 
-/* ---- CONFIG ---- */
-const BACKEND_URL     = window.CRYPTOFORGE_BACKEND_URL ||
-                        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                          ? 'http://localhost:8080'
-                          : 'https://cryptoforge-oljk.onrender.com');
+const BACKEND_URL     = window.CRYPTOFORGE_BACKEND_URL || 'https://cryptoforge-oljk.onrender.com';
 const API_BASE        = `${BACKEND_URL}/api`;
 const COINGECKO_BASE  = 'https://api.coingecko.com/api/v3';
 const PRICE_INTERVAL  = 15000; // 15s
@@ -724,8 +720,8 @@ function fmtLarge(v) {
 }
 
 function updateBackendLinks() {
-  document.querySelectorAll('a[href*="localhost:8080"]').forEach(a => {
-    a.href = a.href.replace(/http:\/\/localhost:8080/g, BACKEND_URL);
+  document.querySelectorAll('a[href*="localhost"]').forEach(a => {
+    a.href = a.href.replace(/http:\/\/localhost:\d+/g, BACKEND_URL).replace(/http:\/\/localhost/g, BACKEND_URL);
   });
 }
 

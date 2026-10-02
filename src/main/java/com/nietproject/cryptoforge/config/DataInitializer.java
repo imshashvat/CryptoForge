@@ -69,7 +69,6 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     @Override
-    @Transactional
     public void run(ApplicationArguments args) {
         seedAssets();
         seedAdmin();

@@ -18,7 +18,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
+        if (username == null || username.isBlank()) {
+            throw new UsernameNotFoundException("Username or email cannot be empty");
+        }
+        String clean = username.trim();
+        return userRepository.findByUsername(clean)
+                .or(() -> userRepository.findByUsername(clean.toLowerCase()))
+                .or(() -> userRepository.findByEmail(clean))
+                .or(() -> userRepository.findByEmail(clean.toLowerCase()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 }

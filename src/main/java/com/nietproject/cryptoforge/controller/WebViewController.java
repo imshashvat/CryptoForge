@@ -31,6 +31,8 @@ import java.util.Map;
 @Controller
 public class WebViewController {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(WebViewController.class);
+
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final WalletRepository walletRepository;
@@ -39,6 +41,7 @@ public class WebViewController {
     private final com.nietproject.cryptoforge.service.OrderService orderService;
     private final TransactionRepository transactionRepository;
     private final AssetRepository assetRepository;
+    private final AuthService authService;
 
     public WebViewController(AuthenticationManager authenticationManager,
                              UserRepository userRepository,
@@ -47,7 +50,8 @@ public class WebViewController {
                              OrderRepository orderRepository,
                              com.nietproject.cryptoforge.service.OrderService orderService,
                              TransactionRepository transactionRepository,
-                             AssetRepository assetRepository) {
+                             AssetRepository assetRepository,
+                             AuthService authService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;
@@ -56,6 +60,7 @@ public class WebViewController {
         this.orderService = orderService;
         this.transactionRepository = transactionRepository;
         this.assetRepository = assetRepository;
+        this.authService = authService;
     }
 
 
@@ -111,9 +116,9 @@ public class WebViewController {
             }
             return "redirect:/dashboard";
         } catch (Exception e) {
-            request.setAttribute("javax.servlet.error.exception", e);
-            request.setAttribute("error", e.getMessage());
-            return "loginError";
+            log.warn("Login failed for username='{}': {}", username, e.getMessage());
+            request.setAttribute("error", "Invalid username or password. Please try again.");
+            return "login";
         }
     }
 
@@ -123,6 +128,21 @@ public class WebViewController {
             return "redirect:/dashboard"; // already logged in
         }
         return "register";
+    }
+
+    @PostMapping("/register")
+    public String handleRegister(@RequestParam String username,
+                                 @RequestParam String email,
+                                 @RequestParam String password,
+                                 HttpServletRequest request) {
+        try {
+            authService.register(new com.nietproject.cryptoforge.dto.RegisterRequest(username, email, password));
+            return "redirect:/login?registered=1";
+        } catch (Exception e) {
+            log.warn("Registration failed for username='{}': {}", username, e.getMessage());
+            request.setAttribute("error", e.getMessage());
+            return "register";
+        }
     }
 
     @GetMapping("/logout")
