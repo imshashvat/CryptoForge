@@ -90,7 +90,7 @@ public class DatabaseConfig {
         config.setMaxLifetime(1800000);
         config.setKeepaliveTime(30000);
         config.setValidationTimeout(10000);
-        config.setLeakDetectionThreshold(60000);
+        config.setInitializationFailTimeout(-1);
         config.addDataSourceProperty("connectTimeout", "15000");
         config.addDataSourceProperty("socketTimeout", "30000");
         config.addDataSourceProperty("autoReconnect", "true");
